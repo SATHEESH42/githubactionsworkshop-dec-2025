@@ -34,7 +34,7 @@ jobs:
               with:
                   context: ./src/order-service
                   load: true # Exports the image to the local Docker daemon for Trivy scanning
-                  tags: order-service:${{ github.event.pull_request.head.sha }}
+                  tags: order-service
 
             - name: Setup Trivy
               # It's better to use the specific version of the setup action instead of 'v0.2.0' as that is quite old.
@@ -48,7 +48,7 @@ jobs:
               # It's common practice to use the main branch for the action: aquasecurity/trivy-action@master
               uses: aquasecurity/trivy-action@master
               with:
-                  image-ref: order-service:${{ github.event.pull_request.head.sha }}
+                  image-ref: order-service
                   format: "sarif"
                   output: "order-trivy-results.sarif"
 
@@ -58,12 +58,12 @@ jobs:
               with:
                   context: ./src/product-service
                   load: true
-                  tags: product-service:${{ github.event.pull_request.head.sha }}
+                  tags: product-service
 
             - name: Run Trivy vulnerability scan for product
               uses: aquasecurity/trivy-action@master
               with:
-                  image-ref: product-service:${{ github.event.pull_request.head.sha }}
+                  image-ref: product-service
                   format: "sarif"
                   output: "product-trivy-results.sarif"
 
@@ -73,12 +73,12 @@ jobs:
               with:
                   context: ./src/store-front
                   load: true
-                  tags: store-front:${{ github.event.pull_request.head.sha }}
+                  tags: store-front
 
             - name: Run Trivy vulnerability scan for store
               uses: aquasecurity/trivy-action@master
               with:
-                  image-ref: store-front:${{ github.event.pull_request.head.sha }}
+                  image-ref: store-front
                   format: "sarif"
                   output: "store-trivy-results.sarif"
 
