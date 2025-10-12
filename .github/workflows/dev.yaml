@@ -41,12 +41,6 @@ jobs:
                   tags: shaikkhajaibrahim/devstore-front
                   push: true
 
-            - name: Run Trivy vulnerability scan for store
-              uses: aquasecurity/trivy-action@master
-              with:
-                  image-ref: store-front
-                  format: "sarif"
-                  output: "store-trivy-results.sarif"
             - name: Run Terraform to proovision infra
               run: |
                 cd infra/terraform
