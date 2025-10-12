@@ -24,8 +24,8 @@ jobs:
           # Use Bash parameter expansion to get the first 7 characters of the head commit SHA.
           FULL_SHA=${{ github.event.pull_request.head.sha }}
           SHORT_SHA=${FULL_SHA:0:7}
-          # Export the short SHA for use in subsequent steps.
-          echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_ENV
+          # Set as step output for use in subsequent steps.
+          echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_OUTPUT
           echo "Generated Short SHA: $SHORT_SHA"
 
       # --- Order Service Build and Scan ---
@@ -34,7 +34,7 @@ jobs:
         with:
           context: ./src/order-service
           load: true # Exports the image to the local Docker daemon for Trivy scanning
-          tags: order-service:${{ env.SHORT_SHA }}
+          tags: order-service:${{ steps.short-sha-step.outputs.SHORT_SHA }}
       
       - name: Setup Trivy
         # It's better to use the specific version of the setup action instead of 'v0.2.0' as that is quite old. 
@@ -48,7 +48,7 @@ jobs:
         # It's common practice to use the main branch for the action: aquasecurity/trivy-action@master
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: order-service:${{ env.SHORT_SHA }} 
+          image-ref: order-service:${{ steps.short-sha-step.outputs.SHORT_SHA }} 
           format: 'sarif'
           output: 'order-trivy-results.sarif'
       
@@ -58,12 +58,12 @@ jobs:
         with:
           context: ./src/product-service
           load: true 
-          tags: product-service:${{ env.SHORT_SHA }}
+          tags: product-service:${{ steps.short-sha-step.outputs.SHORT_SHA }}
 
       - name: Run Trivy vulnerability scan for product
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: product-service:${{ env.SHORT_SHA }} 
+          image-ref: product-service:${{ steps.short-sha-step.outputs.SHORT_SHA }} 
           format: 'sarif'
           output: 'product-trivy-results.sarif'
 
@@ -73,12 +73,12 @@ jobs:
         with:
           context: ./src/store-front
           load: true 
-          tags: store-front:${{ env.SHORT_SHA }}
+          tags: store-front:${{ steps.short-sha-step.outputs.SHORT_SHA }}
           
       - name: Run Trivy vulnerability scan for store
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: store-front:${{ env.SHORT_SHA }} 
+          image-ref: store-front:${{ steps.short-sha-step.outputs.SHORT_SHA }} 
           format: 'sarif'
           output: 'store-trivy-results.sarif'
           
