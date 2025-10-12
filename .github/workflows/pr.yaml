@@ -85,9 +85,3 @@ jobs:
                   image-ref: store-front
                   format: "sarif"
                   output: "store-trivy-results.sarif"
-
-            # Add a step to upload the SARIF reports
-            - name: Upload SARIF results to GitHub Security tab
-              uses: github/codeql-action/upload-sarif@v3
-              with:
-                  sarif_file: "**/*.sarif"
