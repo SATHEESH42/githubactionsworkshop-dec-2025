@@ -1,20 +1,19 @@
 name: "developer  workflow"
 
 on:
-   push:
-    branches: 
-    - developer/v1.0
-   workflow_dispatch:     
+    push:
+        branches:
+            - developer/v1.0
+    workflow_dispatch:
 
 permissions:
-  contents: read # Required for actions/checkout
-  security-events: write # Required for github/codeql-action/upload-sarif@v3
+    contents: read # Required for actions/checkout
+    security-events: write # Required for github/codeql-action/upload-sarif@v3
 
 jobs:
-    pr-job:
+    dev-ci:
         runs-on: self-hosted
         steps:
-
             # --- Order Service Build and Scan ---
             - name: Build and export order service to Docker
               uses: docker/build-push-action@v6
@@ -31,7 +30,7 @@ jobs:
                   context: ./src/product-service
                   load: true
                   tags: shaikkhajaibrahim/devproduct-service
-
+                  push: true
 
             # --- Store Front Service Build and Scan ---
             - name: Build and export store front service to Docker
